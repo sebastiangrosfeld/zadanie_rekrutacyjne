@@ -6,6 +6,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
+
         Wall wall = new Wall();
         List<Block> exList = new ArrayList<>();
         exList.add(new ExBlock("zielony","stal"));
@@ -23,9 +24,10 @@ public class Main {
             wall.addBlockToStructure(compositeBlock1);
             wall.addBlockToStructure(new ExBlock("czarny","aluminium"));
         }
+        Structure structure = wall;
         System.out.println(wall.getBlocks() + " root");
-        System.out.println(wall.findBlockByColor("czerwony"));
-        System.out.println(wall.findBlocksByMaterial("drewno") + " drewno");
-        System.out.println(wall.count());
+        System.out.println(structure.findBlockByColor("czerwony"));
+        System.out.println(structure.findBlocksByMaterial("drewno") + " drewno");
+        System.out.println(structure.count());
     }
 }
