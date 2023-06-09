@@ -23,43 +23,43 @@ public class Wall implements Structure{
         return Optional.ofNullable(resultBlock);
     }
 
-    private Block findBlockByColorFromCompositeBlock(Block block, String color, CompositeBlock compositeBlock) {
+    private Block findBlockByColorFromCompositeBlock(Block resultBlock, String color, CompositeBlock compositeBlock) {
         for(Block loopBlock : compositeBlock.getBlocks()) {
             if (loopBlock instanceof CompositeBlock) {
-                block = findBlockByColorFromCompositeBlock(block,color,(CompositeBlock) loopBlock);
-                if(block != null)
-                    return block;
+                resultBlock = findBlockByColorFromCompositeBlock(resultBlock,color,(CompositeBlock) loopBlock);
+                if(resultBlock != null)
+                    return resultBlock;
             } else {
                 if(loopBlock.getColor().equals(color)) {
                     return loopBlock;
                 }
             }
         }
-        return block;
+        return resultBlock;
     }
 
     @Override
     public List<Block> findBlocksByMaterial(String material) {
-        List<Block> mBlocks = new ArrayList<>();
+        List<Block> addedBlocks = new ArrayList<>();
         for(Block block : blocks) {
             if (block instanceof CompositeBlock) {
-                findBlocksByMaterialFromCompositeBlock(mBlocks,material,(CompositeBlock) block);
+                findBlocksByMaterialFromCompositeBlock(addedBlocks,material,(CompositeBlock) block);
             } else {
                 if(block.getMaterial().equals(material)) {
-                    mBlocks.add(block);
+                    addedBlocks.add(block);
                 }
             }
         }
-        return mBlocks;
+        return addedBlocks;
     }
 
-    private void findBlocksByMaterialFromCompositeBlock(List<Block> mBlocks, String material, CompositeBlock compositeBlock) {
+    private void findBlocksByMaterialFromCompositeBlock(List<Block> addedBlocks, String material, CompositeBlock compositeBlock) {
         for(Block block : compositeBlock.getBlocks()) {
             if (block instanceof CompositeBlock) {
-                findBlocksByMaterialFromCompositeBlock(mBlocks, material,(CompositeBlock) block);
+                findBlocksByMaterialFromCompositeBlock(addedBlocks, material,(CompositeBlock) block);
             } else {
                 if(block.getMaterial().equals(material)) {
-                    mBlocks.add(block);
+                    addedBlocks.add(block);
                 }
             }
         }
