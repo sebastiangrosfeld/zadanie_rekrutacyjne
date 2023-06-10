@@ -26,8 +26,8 @@ public class Main {
         }
         Structure structure = wall;
         System.out.println(wall.getBlocks() + " root");
-        System.out.println(structure.findBlockByColor("czerwony"));
-        System.out.println(structure.findBlocksByMaterial("drewno") + " drewno");
+        System.out.println(structure.findBlockByColor("cczerwony") + " czewony blok");
+        System.out.println(structure.findBlocksByMaterial("drewno") + " lista blokow drewna");
         System.out.println(structure.count());
     }
 }

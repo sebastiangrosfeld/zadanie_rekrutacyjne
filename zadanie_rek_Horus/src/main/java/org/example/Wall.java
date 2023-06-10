@@ -13,14 +13,15 @@ public class Wall implements Structure{
         for(Block block : blocks) {
             if (block instanceof CompositeBlock) {
               resultBlock = findBlockByColorFromCompositeBlock(resultBlock,color,(CompositeBlock) block);
+                if(resultBlock != null)
+                    return Optional.of(resultBlock);
             } else {
                 if(block.getColor().equals(color)) {
-                    resultBlock = block;
-                    break;
+                   return Optional.of(block);
                 }
             }
         }
-        return Optional.ofNullable(resultBlock);
+        return Optional.empty();
     }
 
     private Block findBlockByColorFromCompositeBlock(Block resultBlock, String color, CompositeBlock compositeBlock) {
@@ -43,7 +44,7 @@ public class Wall implements Structure{
         List<Block> addedBlocks = new ArrayList<>();
         for(Block block : blocks) {
             if (block instanceof CompositeBlock) {
-                findBlocksByMaterialFromCompositeBlock(addedBlocks,material,(CompositeBlock) block);
+                 doActionInCompositeBlock("findBlocksByMaterial",0,addedBlocks,material,(CompositeBlock) block );
             } else {
                 if(block.getMaterial().equals(material)) {
                     addedBlocks.add(block);
@@ -53,24 +54,12 @@ public class Wall implements Structure{
         return addedBlocks;
     }
 
-    private void findBlocksByMaterialFromCompositeBlock(List<Block> addedBlocks, String material, CompositeBlock compositeBlock) {
-        for(Block block : compositeBlock.getBlocks()) {
-            if (block instanceof CompositeBlock) {
-                findBlocksByMaterialFromCompositeBlock(addedBlocks, material,(CompositeBlock) block);
-            } else {
-                if(block.getMaterial().equals(material)) {
-                    addedBlocks.add(block);
-                }
-            }
-        }
-    }
-
     @Override
     public int count() {
         int preCounter = 0;
         for(Block block : blocks) {
             if(block instanceof CompositeBlock){
-               preCounter = countBlocksFromCompositeBlock(preCounter,(CompositeBlock) block);
+                preCounter = doActionInCompositeBlock("count",preCounter,null,null,(CompositeBlock) block);
             } else {
                 preCounter++;
             }
@@ -78,17 +67,30 @@ public class Wall implements Structure{
         return preCounter;
     }
 
-    private int countBlocksFromCompositeBlock(int preCounter, CompositeBlock compositeBlock) {
+    private int doActionInCompositeBlock(String mode,int preCounter, List<Block> findingBlocks,String material,CompositeBlock compositeBlock) {
         for(Block block : compositeBlock.getBlocks()) {
             if (block instanceof CompositeBlock) {
-                preCounter = countBlocksFromCompositeBlock(preCounter,(CompositeBlock) block);
+                switch (mode) {
+                    case "count" ->
+                            preCounter = doActionInCompositeBlock("count", preCounter, findingBlocks, material, (CompositeBlock) block);
+                    case "findBlocksByMaterial" ->
+                            doActionInCompositeBlock("findBlocksByMaterial", preCounter, findingBlocks, material, (CompositeBlock) block);
+                    default -> throw new IllegalArgumentException("Mode is uncorrect");
+                }
             } else {
-                preCounter++;
+                switch (mode) {
+                    case "count" -> preCounter++;
+                    case "findBlocksByMaterial" -> {
+                        if (block.getMaterial().equals(material)) {
+                            findingBlocks.add(block);
+                        }
+                    }
+                    default -> throw new IllegalArgumentException("Mode is uncorrect");
+                }
             }
         }
         return preCounter;
     }
-
 
     public void addBlockToStructure(Block block) {
         this.blocks.add(block);
